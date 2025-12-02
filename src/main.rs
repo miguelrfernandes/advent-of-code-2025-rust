@@ -2,7 +2,11 @@ use std::env;
 use std::fs;
 
 fn shift_dial(dial: i32, shift_distance: i32, dial_range: i32) -> i32 {
-	((dial + shift_distance) % dial_range + dial_range) % dial_range
+	(dial + shift_distance).rem_euclid(dial_range)
+}
+
+fn get_first_char(s: &str) -> Option<char> {
+	s.chars().next()
 }
 
 fn main() {
@@ -12,10 +16,6 @@ fn main() {
 		.expect("Should have been able to read the file");
 	
 	let lines = contents.lines();
-	
-	fn get_first_char(s: &str) -> Option<char> {
-		s.chars().next()
-	}
 
 	let dial_range = 100;
 	let mut dial: i32 = 50;
@@ -34,7 +34,7 @@ fn main() {
 				dial = shift_dial(dial, shift, dial_range);
 			}
 			if dial == target_dial {
-				counter = counter + 1;
+				counter += 1;
 			}
 		}
 	}
