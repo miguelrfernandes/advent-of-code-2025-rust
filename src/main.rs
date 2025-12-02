@@ -11,28 +11,31 @@ fn get_first_char(s: &str) -> Option<char> {
 
 fn main() {
 	let args: Vec<String> = env::args().collect();
+	
 	let file_path = &args[1];
 	let contents = fs::read_to_string(file_path)
 		.expect("Should have been able to read the file");
 	
-	let lines = contents.lines();
-
 	let dial_range = 100;
-	let mut dial: i32 = 50;
 	let target_dial = 0;
+	let mut dial: i32 = 50;
 	let mut counter: i32 = 0;
-	for line in lines {
+	
+	for line in contents.lines() {
 		if let Some(direction) = get_first_char(line) {
 			let shift_text: String = line
 				.chars()
 				.skip(1)
 				.collect();
 			let shift: i32 = shift_text.parse().expect("Failed to parse shift value");
-			if direction == 'L' {
-				dial = shift_dial(dial, -shift, dial_range);	
-			} else if direction == 'R' {
-				dial = shift_dial(dial, shift, dial_range);
-			}
+			dial = match direction {
+				'L' => shift_dial(dial, -shift, dial_range),	
+				'R' => shift_dial(dial, shift, dial_range),
+				_ => {
+					eprintln!("Unknown direction: {direction}");
+					continue;
+				}
+			};
 			if dial == target_dial {
 				counter += 1;
 			}
